@@ -1,0 +1,29 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id        Int       @id @default(autoincrement())
+  firstName String
+  lastName  String
+  password  String
+  email     String    @unique
+  createdAt DateTime  @default(now())
+  reciever  Message[] @relation(name: "reciever")
+  sender    Message[] @relation(name: "sender")
+}
+
+model Message {
+  id         Int      @id @default(autoincrement())
+  text       String
+  recieverId Int
+  reciever   User     @relation(name: "reciever", fields: [recieverId], references: [id])
+  senderId   Int
+  sender     User     @relation(name: "sender", fields: [senderId], references: [id])
+  createdAt  DateTime @default(now())
+}
